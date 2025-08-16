@@ -34,8 +34,8 @@ A real-time chat application built with **Django**, **Django Channels**, and **W
 
 ```bash
 # 1) Clone
-git clone https://github.com/< SANK-0311 >/<Real-Time-Chat-Application-Django-Channels-WebSockets- >.git
-cd <Real-Time-Chat-Application-Django-Channels-WebSockets- >
+git clone https://github.com/<SANK-0311>/<Real-Time-Chat-Application-Django-Channels-WebSockets>.git
+cd <Real-Time-Chat-Application-Django-Channels-WebSockets>
 
 # 2) Create & activate a virtual env
 python -m venv env
