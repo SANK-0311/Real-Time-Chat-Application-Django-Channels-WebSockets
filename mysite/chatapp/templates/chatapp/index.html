@@ -1,0 +1,255 @@
+{% extends 'chatapp/base.html' %}
+{% block body %}
+<style>
+    .room-card {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .room-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: rotate(45deg);
+        transition: all 0.5s;
+        opacity: 0;
+    }
+    
+    .room-card:hover::before {
+        animation: shine 0.5s ease-in-out;
+    }
+    
+    @keyframes shine {
+        0% {
+            transform: rotate(45deg) translateX(-100%);
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: rotate(45deg) translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    .room-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .status-indicator {
+        animation: pulse-glow 2s infinite;
+    }
+    
+    @keyframes pulse-glow {
+        0%, 100% {
+            box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+        }
+        50% {
+            box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+        }
+    }
+    
+    .gradient-border {
+        position: relative;
+        background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 300% 300%;
+        animation: gradient-shift 4s ease infinite;
+        padding: 2px;
+        border-radius: 1rem;
+    }
+    
+    @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .inner-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: calc(1rem - 2px);
+        height: 100%;
+        width: 100%;
+    }
+    
+    .room-icon {
+        animation: float-icon 3s ease-in-out infinite;
+    }
+    
+    @keyframes float-icon {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-5px) rotate(5deg); }
+    }
+    
+    .tag {
+        animation: tag-appear 0.5s ease-out forwards;
+        opacity: 0;
+    }
+    
+    @keyframes tag-appear {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+</style>
+
+<!-- Header Section -->
+<div class="text-center mb-10">
+    <h1 class="text-5xl font-bold text-white mb-4">
+        <span class="inline-block animate-pulse">🌟</span>
+        Chat Rooms
+        <span class="inline-block animate-pulse">🌟</span>
+    </h1>
+    <p class="text-white/70 text-lg">Join a conversation or create your own space</p>
+    
+    <!-- Stats Bar -->
+    <div class="flex justify-center gap-8 mt-6">
+        <div class="text-center">
+            <div class="text-3xl font-bold text-white">{{ chatrooms|length }}</div>
+            <div class="text-white/60 text-sm">Active Rooms</div>
+        </div>
+        <div class="text-center">
+            <div class="text-3xl font-bold text-green-400">247</div>
+            <div class="text-white/60 text-sm">Online Users</div>
+        </div>
+        <div class="text-center">
+            <div class="text-3xl font-bold text-purple-400">1.2k</div>
+            <div class="text-white/60 text-sm">Messages Today</div>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter Bar -->
+<div class="mb-8 flex flex-col md:flex-row gap-4">
+    <div class="flex-1 relative">
+        <input type="text" 
+               placeholder="Search rooms..." 
+               class="w-full px-6 py-4 pl-12 rounded-2xl bg-white/10 backdrop-blur-lg border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all">
+        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-white/50"></i>
+    </div>
+    <div class="flex gap-2">
+        <button class="px-6 py-4 rounded-2xl bg-white/10 backdrop-blur-lg border border-white/20 text-white hover:bg-white/20 transition-all">
+            <i class="fas fa-filter mr-2"></i>Filter
+        </button>
+        <button class="px-6 py-4 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:shadow-lg hover:scale-105 transition-all">
+            <i class="fas fa-plus mr-2"></i>New Room
+        </button>
+    </div>
+</div>
+
+<!-- Rooms Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for chatroom in chatrooms %}
+    <div class="gradient-border room-card">
+        <div class="inner-card p-6">
+            <a href="{% url 'chatroom' chatroom.slug %}" class="block h-full">
+                <!-- Room Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center room-icon">
+                            <i class="fas fa-comments text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">{{ chatroom.name }}</h3>
+                            <p class="text-white/60 text-sm">Created 2 days ago</p>
+                        </div>
+                    </div>
+                    <div class="status-indicator w-3 h-3 bg-green-400 rounded-full"></div>
+                </div>
+                
+                <!-- Room Description -->
+                <p class="text-white/70 mb-4 line-clamp-2">
+                    Welcome to {{ chatroom.name }}! Join us for engaging discussions and meet amazing people from around the world.
+                </p>
+                
+                <!-- Room Stats -->
+                <div class="flex gap-4 mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-users text-white/50 text-sm"></i>
+                        <span class="text-white/70 text-sm">42 members</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-message text-white/50 text-sm"></i>
+                        <span class="text-white/70 text-sm">128 messages</span>
+                    </div>
+                </div>
+                
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="tag stagger-1 px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">General</span>
+                    <span class="tag stagger-2 px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Friendly</span>
+                    <span class="tag stagger-3 px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Active</span>
+                </div>
+                
+                <!-- Action Button -->
+                <button class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-white/20 text-white hover:bg-white/10 transition-all group">
+                    <span class="group-hover:scale-110 inline-block transition-transform">Join Room</span>
+                    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 inline-block transition-transform"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Create New Room Card -->
+    <div class="gradient-border room-card">
+        <div class="inner-card p-6 flex flex-col items-center justify-center min-h-[300px]">
+            <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4 hover:scale-110 transition-transform cursor-pointer">
+                <i class="fas fa-plus text-white text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Create New Room</h3>
+            <p class="text-white/60 text-center text-sm">Start your own community and invite friends</p>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+<div class="flex justify-center mt-10 gap-2">
+    <button class="px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white">1</button>
+    <button class="px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all">2</button>
+    <button class="px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all">3</button>
+    <button class="px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
+
+<!-- Floating Action Button -->
+<div class="fixed bottom-8 right-8 z-50">
+    <button class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-2xl hover:scale-110 transition-all group">
+        <i class="fas fa-rocket text-white text-xl group-hover:rotate-45 transition-transform"></i>
+    </button>
+</div>
+
+<script>
+    // Search functionality
+    document.querySelector('input[type="text"]').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rooms = document.querySelectorAll('.room-card');
+        
+        rooms.forEach(room => {
+            const roomName = room.querySelector('h3')?.textContent.toLowerCase();
+            if (roomName && roomName.includes(searchTerm)) {
+                room.style.display = 'block';
+            } else if (!room.querySelector('.fa-plus')) {
+                room.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+{% endblock %}

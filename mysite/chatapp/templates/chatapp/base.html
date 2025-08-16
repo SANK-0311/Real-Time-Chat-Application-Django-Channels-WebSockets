@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>ChatVerse - Modern Messaging</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        
+        .nav-link:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .logo-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+        
+        .menu-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .menu-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            animation: float-random 20s infinite ease-in-out;
+        }
+        
+        @keyframes float-random {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, -100px) rotate(90deg); }
+            50% { transform: translate(-100px, 100px) rotate(180deg); }
+            75% { transform: translate(-50px, -50px) rotate(270deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape" style="width: 200px; height: 200px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="shape" style="width: 150px; height: 150px; top: 70%; right: 10%; animation-delay: 5s;"></div>
+        <div class="shape" style="width: 100px; height: 100px; top: 40%; left: 50%; animation-delay: 10s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-effect shadow-2xl px-6 py-4 m-4 rounded-2xl relative z-10">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center">
+                <!-- Logo Section -->
+                <a class="flex items-center space-x-4 group" href="">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-white rounded-full blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                        <div class="relative bg-gradient-to-br from-purple-500 to-pink-500 p-3 rounded-2xl shadow-lg logo-animation">
+                            <i class="fas fa-comments text-white text-3xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold gradient-text">ChatVerse</h1>
+                        <p class="text-xs text-white/70">Connect. Chat. Create.</p>
+                    </div>
+                </a>
+
+                <!-- Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="" class="nav-link px-6 py-3 rounded-xl glass-effect text-white font-medium hover:bg-white/20 transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-home"></i>
+                        <span>Rooms</span>
+                        <span class="pulse-dot w-2 h-2 bg-green-400 rounded-full inline-block"></span>
+                    </a>
+                    <a href="" class="nav-link px-6 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-compass"></i>
+                        <span>Discover</span>
+                    </a>
+                    <a href="" class="nav-link px-6 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
+                    </a>
+                    <a href="" class="nav-link px-6 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </a>
+                </div>
+
+                <!-- User Section -->
+                <div class="flex items-center space-x-4">
+                    <button class="md:hidden text-white hover:bg-white/10 p-3 rounded-xl transition-all">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="hidden md:flex items-center space-x-3">
+                        <button class="p-3 rounded-xl glass-effect text-white hover:bg-white/20 transition-all">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="p-3 rounded-xl glass-effect text-white hover:bg-white/20 transition-all">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <div class="relative group">
+                            <button class="flex items-center space-x-3 px-4 py-2 rounded-xl glass-effect hover:bg-white/20 transition-all">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <i class="fas fa-chevron-down text-white/70 text-sm group-hover:rotate-180 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu (hidden by default) -->
+            <div class="md:hidden mt-4 pt-4 border-t border-white/20 hidden" id="mobileMenu">
+                <div class="space-y-2">
+                    <a href="" class="menu-item block px-4 py-3 rounded-xl glass-effect text-white hover:bg-white/20 transition-all">
+                        <i class="fas fa-home mr-3"></i>Rooms
+                    </a>
+                    <a href="" class="menu-item block px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all">
+                        <i class="fas fa-compass mr-3"></i>Discover
+                    </a>
+                    <a href="" class="menu-item block px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all">
+                        <i class="fas fa-bell mr-3"></i>Notifications
+                    </a>
+                    <a href="" class="menu-item block px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all">
+                        <i class="fas fa-info-circle mr-3"></i>About
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-8 relative z-10">
+        <div class="glass-effect rounded-3xl p-8 shadow-2xl">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <!-- Optional Footer -->
+    <footer class="glass-effect mt-12 mx-4 mb-4 rounded-2xl p-6 text-center text-white/70 relative z-10">
+        <p>&copy; 2025 ChatVerse. All rights reserved.</p>
+        <div class="flex justify-center space-x-4 mt-4">
+            <a href="#" class="hover:text-white transition-colors"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="hover:text-white transition-colors"><i class="fab fa-github"></i></a>
+            <a href="#" class="hover:text-white transition-colors"><i class="fab fa-discord"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.md\\:hidden button').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        });
+
+        // Dark mode toggle (you can implement the functionality)
+        document.querySelector('.fa-moon').parentElement.addEventListener('click', function() {
+            // Toggle dark mode logic here
+            this.querySelector('i').classList.toggle('fa-moon');
+            this.querySelector('i').classList.toggle('fa-sun');
+        });
+    </script>
+</body>
+</html>
